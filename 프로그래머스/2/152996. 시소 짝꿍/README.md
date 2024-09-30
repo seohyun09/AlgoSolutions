@@ -1,6 +1,6 @@
 # [level 2] 시소 짝꿍 - 152996 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/152996) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/152996#) 
 
 ### 성능 요약
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 09월 30일 14:04:09
+2024년 09월 30일 14:05:05
 
 ### 문제 설명
 

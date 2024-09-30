@@ -1,24 +1,18 @@
 def solution(weights):
     cnt=0
-    hash_map={}
-    
     for i in range(len(weights)):
-        if weights[i] not in hash_map:
-            hash_map[weights[i]]=1
-        else:
-            hash_map[weights[i]]+=1
-    
-    numbers=sorted(hash_map.keys())
-    
-    for i in range(len(numbers)-1):
-        for j in range(i+1, len(numbers)):
-            result=numbers[j]/numbers[i]
-            if result in [2, 3/2, 4/3]:
-                cnt+=hash_map[numbers[i]]*hash_map[numbers[j]]
-                
-    for num in numbers:
-        if hash_map[num]!=1:
-            cnt+=(hash_map[num]*(hash_map[num]-1))//2
-                
+        for j in range(i+1, len(weights)):
+            if weights[i]==weights[j]:
+                cnt+=1
+                continue
+            elif weights[i]*2==weights[j] or weights[i]==weights[j]*2:
+                cnt+=1
+                continue
+            elif weights[i]%3==0 or weights[j]%3==0:
+                if weights[i]*2==weights[j]*3 or weights[i]*4==weights[j]*3:
+                    cnt+=1
+                    continue
+                if weights[i]*3==weights[j]*2 or weights[i]*3==weights[j]*4:
+                    cnt+=1
+                    continue
     return cnt
-        
