@@ -1,21 +1,18 @@
 function solution(numbers, target) {
-    let length=numbers.length;
-    let result=[];
+    var arr=[0];
     
-    function dfs(depth, node) {
-        if (depth===length) {
-            result.push(node);
-            return
+    for (let i=0; i<numbers.length; i++) {
+        var temp=[];
+        for (let j=0; j<arr.length; j++) {
+            temp.push(arr[j]+numbers[i]);
+            temp.push(arr[j]-numbers[i]);
         }
-        dfs(depth+1, node+numbers[depth]);
-        dfs(depth+1, node-numbers[depth]);
+        arr=temp;
     }
     
-    dfs(0, 0);
-    
     let cnt=0;
-    for (let i=0; i<result.length; i++) {
-        if (result[i]===target) cnt+=1;
+    for (let i=0; i<arr.length; i++) {
+        if (arr[i]===target) cnt+=1;
     }
     
     return cnt;
