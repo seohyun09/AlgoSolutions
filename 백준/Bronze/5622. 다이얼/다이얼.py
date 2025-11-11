@@ -1,10 +1,16 @@
-str=input()
-dial=[2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,7,8,8,8,9,9,9,9]
+import sys
+dial=sys.stdin.readline().strip()
+hash_map={'A':2, 'B':2, 'C':2,
+          'D':3, 'E':3, 'F':3,
+          'G':4, 'H':4, 'I':4,
+          'J':5, 'K':5, 'L':5,
+          'M':6, 'N':6, 'O':6,
+          'P':7, 'Q':7, 'R':7, 'S':7,
+          'T':8, 'U':8, 'V':8,
+          'W':9, 'X':9, 'Y':9, 'Z':9}
 
-sum=0
+answer=0
+for i in range(len(dial)):
+  answer+=(2+hash_map[dial[i]]-1)
 
-for i in range(len(str)):
-    sum+=dial[ord(str[i])-ord('A')]
-
-sum+=len(str)
-print(sum)
+print(answer)
