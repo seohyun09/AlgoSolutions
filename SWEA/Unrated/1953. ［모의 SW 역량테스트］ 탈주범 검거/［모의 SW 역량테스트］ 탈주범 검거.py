@@ -3,71 +3,63 @@ from collections import deque
 t = int(input())
 
 for tc in range(t):
+    # n: 세로 크기, m: 가로 크기, r: 맨홀 세로 위치, c: 맨홀 가로 위치, l: 탈출 소요시간
     n, m, r, c, l = map(int, input().split())
     arr = [list(map(int, input().split())) for _ in range(n)]
+    visited = [[False] * m for _ in range(n)]
 
     # 상, 하, 좌, 우
     di = [-1, 1, 0, 0]
     dj = [0, 0, -1, 1]
 
-    tunnel_map = {
-        1: [1, 1, 1, 1],
-        2: [1, 1, 0, 0],
-        3: [0, 0, 1, 1],
-        4: [1, 0, 0, 1],
-        5: [0, 1, 0, 1],
-        6: [0, 1, 1, 0],
-        7: [1, 0, 1, 0]
+    tunnel_type = {
+        1: [0, 1, 2, 3],    # 상, 하, 좌, 우
+        2: [0, 1],          # 상, 하
+        3: [2, 3],          # 좌, 우
+        4: [0, 3],          # 상, 우
+        5: [1, 3],          # 하, 우
+        6: [1, 2],          # 하, 좌
+        7: [0, 2]           # 상, 좌
     }
 
-    visited = [[False] * m for _ in range(n)]
-    cnt = 1
     que = deque()
-    que.append((r, c, 0))
+    que.append((r, c, 1))
     visited[r][c] = True
 
-    while que:
-        i, j, time = que.popleft()
+    def validate(i, j, prev_i, prev_j):
+        pos = tunnel_type[arr[i][j]]
 
-        for k in range(4):
-            direction = tunnel_map[arr[i][j]]
-
-            if direction[k] == 0:
-                continue
-
+        for k in pos:
             ni = i + di[k]
             nj = j + dj[k]
 
-            # 범위 확인
+            if ni < 0 or ni >= n or nj < 0 or nj >= m: continue
+            if ni == prev_i and nj == prev_j:
+                return True
+        return False
+
+
+    while que:
+        i, j, cnt = que.popleft()
+
+        pos = tunnel_type[arr[i][j]]
+
+        for k in pos:
+            ni = i + di[k]
+            nj = j + dj[k]
+
             if ni < 0 or ni >= n or nj < 0 or nj >= m:
                 continue
 
-            if arr[ni][nj] != 0 and not visited[ni][nj]:
-                # 이동한 위치가 이전 통로와의 연결 유무 확인
-                flag = False
-                for d in range(4):
-                    direction = tunnel_map[arr[ni][nj]]
+            if not visited[ni][nj] and cnt < l:
 
-                    if direction[d] == 0:
-                        continue
-
-                    prev_i = ni + di[d]
-                    prev_j = nj + dj[d]
-
-                    if prev_i < 0 or prev_i >= n or prev_j < 0 or prev_j >= m:
-                        continue
-                    if prev_i == i and prev_j == j:
-                        flag = True
-                        break
-
-                if flag:
+                if arr[ni][nj] and validate(ni, nj, i, j):
                     visited[ni][nj] = True
+                    que.append((ni, nj, cnt + 1))
 
-                    if time == l - 1:
-                        break
+    answer = 0
 
-                    que.append((ni, nj, time + 1))
-                    cnt += 1
+    for i in range(n):
+        answer += sum(visited[i])
 
-
-    print(f"#{tc + 1} {cnt}")
+    print(f"#{tc + 1} {answer}")
