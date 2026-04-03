@@ -1,26 +1,26 @@
 import heapq
-def solution(genres, plays):
-    numOfGenres={}
-    plays_map={}
-    answer=[]
-    for i in range(len(genres)):
-        if genres[i] not in numOfGenres.keys():
-            numOfGenres[genres[i]]=plays[i]
-            plays_map[genres[i]]=[]
-        else:
-            numOfGenres[genres[i]]+=plays[i]
-        heapq.heappush(plays_map[genres[i]], (-plays[i], i))
-    
-    numOfGenres=dict(sorted(numOfGenres.items(), key=lambda x:x[1], reverse=True))
-    
-    for genre in numOfGenres:
-        num, idx=heapq.heappop(plays_map[genre])
-        answer.append(idx)
-        if plays_map[genre]:
-            num, idx=heapq.heappop(plays_map[genre])
-            answer.append(idx)
-        
-    return answer
-    
 
+def solution(genres, plays):
+    play_map = {}   # 장르별 노래 재생 횟수
+    genre_map = {}  # 장르별 노래 횟수와 인덱스
     
+    for i in range(len(genres)):
+        if genres[i] not in play_map:
+            play_map[genres[i]] = 0
+            genre_map[genres[i]] = []
+        play_map[genres[i]] += plays[i]
+        heapq.heappush(genre_map[genres[i]], (-plays[i], i))
+        
+    
+    play_sort = sorted(play_map.items(), key=lambda x: -x[1])
+    
+    result = []
+    for key, _ in play_sort:
+        time = 0
+        
+        while genre_map[key] and time < 2:
+            play, idx = heapq.heappop(genre_map[key])
+            result.append(idx)
+            time += 1
+    
+    return result
