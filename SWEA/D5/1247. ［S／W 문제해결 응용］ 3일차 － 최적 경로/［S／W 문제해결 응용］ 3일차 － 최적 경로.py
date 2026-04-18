@@ -29,7 +29,6 @@ for tc in range(t):
                 recur(n_arr[i][0], n_arr[i][1], cnt + 1, dist + distance, visited)
                 visited[i] = False
 
-    for i in range(n):
-        recur(sx, sy, 0, 0, [False] * n)
+    recur(sx, sy, 0, 0, [False] * n)
 
     print(f"#{tc + 1} {answer}")
