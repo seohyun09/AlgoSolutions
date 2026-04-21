@@ -1,78 +1,69 @@
+from heapq import heappush, heappop
+
 t = int(input())
 
 for tc in range(t):
-    # n: 셀의 개수, m: 격리 시간, k: 미생물 군집의 개수
+    # n: 한 변에 있는 셀의 개수, m: 격리 시간, k: 미생물 군집 개수
     n, m, k = map(int, input().split())
-    arr = []
 
-    for _ in range(k):
-        # 세로, 가로, 미생물 수, 이동방향
-        row, col, num, d = map(int, input().split())
-        arr.append([row, col, num, d])
-
-    time = m
+    hash_map = {}
+    for i in range(k):
+        ni, nj, num, d = map(int, input().split())
+        if (ni, nj) not in hash_map:
+            hash_map[(ni, nj)] = []
+        heappush(hash_map[(ni, nj)], (num, d))
 
     # 상(1), 하(2), 좌(3), 우(4)
     di = [0, -1, 1, 0, 0]
     dj = [0, 0, 0, -1, 1]
 
-    while time > 0:
-        next_arr = []
-        hash_map = {}
+    def change_direction(d):
+        if d == 1: return 2
+        elif d == 2: return 1
+        elif d == 3: return 4
+        elif d == 4: return 3
 
-        for i, j, num, d in arr:
-            ni = i + di[d]
-            nj = j + dj[d]
-
-            next_num, next_d = num, d
-
-            if ni < 0 or ni >= n or nj < 0 or nj >= n:
-                continue
-
-            # 가장자리 도달
-            if ni == 0 or ni == n-1 or nj ==0 or nj == n-1:
-                next_num //= 2
-
-                if next_d == 1:
-                    next_d = 2
-                elif next_d == 2:
-                    next_d = 1
-                elif next_d == 3:
-                    next_d = 4
-                else:
-                    next_d = 3
-
-            if next_num == 0:
-                continue
-
-            if (ni, nj) not in hash_map:
-                hash_map[(ni, nj)] = []
-            hash_map[(ni, nj)].append((next_num, next_d))
+    while m:
+        next_map = {}
 
         for key, val in hash_map.items():
+            ni, nj = key[0], key[1]
+            num, d = val[0][0], val[0][1]
+
+            ni += di[d]
+            nj += dj[d]
+
+            if ni == 0 or ni == n-1 or nj == 0 or nj == n-1:
+                num //= 2
+                d = change_direction(d)
+
+            # 미생물이 0이 되는 경우
+            if num == 0:
+                continue
+
+            if (ni, nj) not in next_map:
+                next_map[(ni, nj)] = []
+            heappush(next_map[(ni, nj)], (num, d))
+
+        for key, val in next_map.items():
             if len(val) >= 2:
                 total = 0
-                max_num = 0
-                max_d = 0
-                
-                for cnt, d in val:
-                    total += cnt
-                    if cnt > max_num:
-                        max_num = cnt
+                max_num, max_d = 0, 0
+                while next_map[key]:
+                    num, d = heappop(next_map[key])
+                    total += num
+                    if num > max_num:
+                        max_num = num
                         max_d = d
-                next_arr.append([key[0], key[1], total, max_d])
-                
-            else:
-                next_arr.append([key[0], key[1], val[0][0], val[0][1]])
 
-        arr = next_arr
-
-        time -= 1
+                next_map[key] = []
+                heappush(next_map[key], (total, max_d))
+        hash_map = next_map
+        m -= 1
 
     answer = 0
 
-    # 남은 미생물 수 확인
-    for i, j, num, d in arr:
-        answer += num
+    for key, val in hash_map.items():
+        answer += val[0][0]
 
     print(f"#{tc + 1} {answer}")
