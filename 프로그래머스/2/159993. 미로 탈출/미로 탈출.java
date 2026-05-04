@@ -62,16 +62,16 @@ class Solution {
             int[] curr = que.poll();
             int cnt = curr[2];
             
+            if (maze[curr[0]][curr[1]] == target) {
+                return new int[] {curr[0], curr[1], cnt};
+            }
+            
             for (int k = 0; k < 4; k++) {
                 int ni = curr[0] + di[k];
                 int nj = curr[1] + dj[k];
                 
                 if (ni < 0 || ni >= row_size || nj < 0 || nj >= col_size) {
                     continue;
-                }
-                
-                if (maze[ni][nj] == target) {
-                    return new int[] {ni, nj, cnt + 1};
                 }
                 
                 if (maze[ni][nj] != 'X' && !visited[ni][nj]) {
