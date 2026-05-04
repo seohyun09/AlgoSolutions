@@ -10,7 +10,7 @@ class Solution {
             return number;
         }
         
-        if (number.length() <= k) return "";
+        if (number.length() == k) return "";
         
         int max_val = number.charAt(0) - '0';
         int max_idx = 0;
