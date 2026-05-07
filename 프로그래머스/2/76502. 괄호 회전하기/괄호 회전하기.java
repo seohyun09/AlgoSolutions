@@ -29,9 +29,8 @@ class Solution {
     private boolean validate(String s) {
         
         Stack<Character> stack = new Stack<>();
-        stack.push(s.charAt(0));
         
-        int idx = 1;
+        int idx = 0;
         
         while (idx < s.length()) {
             char op = s.charAt(idx);
