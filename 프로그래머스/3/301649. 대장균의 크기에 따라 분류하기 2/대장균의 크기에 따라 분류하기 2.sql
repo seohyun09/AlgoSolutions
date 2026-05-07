@@ -1,0 +1,19 @@
+WITH S AS (
+    SELECT ID
+         , SIZE_OF_COLONY
+         , NTILE(4) OVER (ORDER BY SIZE_OF_COLONY DESC) AS QUANTILE
+    FROM ECOLI_DATA
+), D AS (
+    SELECT ID
+         , CASE WHEN QUANTILE = 1 THEN "CRITICAL"
+                WHEN QUANTILE = 2 THEN "HIGH"
+                WHEN QUANTILE = 3 THEN "MEDIUM"
+                WHEN QUANTILE = 4 THEN "LOW"
+            ELSE '' END AS COLONY_NAME
+    FROM S
+)
+
+SELECT *
+FROM D
+ORDER BY ID
+;
