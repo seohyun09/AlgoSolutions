@@ -1,97 +1,142 @@
-t = int(input())
+import java.io.*;
+import java.util.*;
 
-for tc in range(t):
-    n = int(input())
-    board = [list(map(int, input().split())) for _ in range(n)]
+public class Solution {
+	static int[][] grid;
+	static int N;
+	static ArrayList<int[]> processorList = new ArrayList<>();
+	
+	static int[] di = {-1, 1, 0, 0};
+	static int[] dj = {0, 0, -1, 1};
+	
+	public static void main(String arts[]) throws Exception {
 
-    # 가장자리가 아닌 코어들 저장
-    cores = []
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
+		
+		int t = Integer.parseInt(br.readLine());
+		
+		for (int tc = 0; tc < t; tc++) {
+			sb.append("#").append(tc + 1).append(" ");
+			
+			int n = Integer.parseInt(br.readLine());
+			N = n;
+			
+			grid = new int[N][N];
+			processorList = new ArrayList<>();
+			
+			for (int i = 0; i < N; i++) {
+				st = new StringTokenizer(br.readLine());
+				
+				for (int j = 0; j < N; j++) {
+					grid[i][j] = Integer.parseInt(st.nextToken());
+					
+					// 프로세서 위치 저장
+					if (grid[i][j] == 1) {
+						processorList.add(new int[] {i, j});
+					}
+				}
+			}
+			
+			int[][] copied = new int[N][N];
+			
+			for (int i = 0; i < N; i++) {
+				copied[i] = grid[i].clone();
+			}
+			
+			max_connected = 0;
+			numOfLine = Integer.MAX_VALUE;
+			
+			recursive(copied, 0, 0, 0);
 
-    for i in range(n):
-        for j in range(n):
-            if i == 0 or i == n - 1 or j == 0 or j == n - 1: continue
-            if board[i][j] == 1:
-                cores.append([i, j])
-
-    max_core = 0
-    min_wire = 10000
-
-    di = [-1, 1, 0, 0]
-    dj = [0, 0, -1, 1]
-
-
-    # idx : 현재 처리 중인 코어 번호 (cores 배열 중에서)
-    # connected : 지금까지 연결한 코어 개수
-    # wire_length : 지금까지 설치한 전선의 총 길이
-    def dfs(idx, connected, wire_length):
-        global max_core, min_wire, di, dj
-
-        # 종료 조건 : idx가 cores의 길이(개수)와 같아지는 경우
-        # 최대 길이 갱신
-        # 최소 전선 개수 갱신
-        if idx == len(cores):
-            if connected > max_core:
-                max_core = connected
-                min_wire = wire_length
-            elif connected == max_core:
-                min_wire = min(min_wire, wire_length)
-            return
-
-        # (x, y) 선언
-        x = cores[idx][0]
-        y = cores[idx][1]
-
-        # 4방향 연결 유무 기본 : False
-        direction_connected = False
-
-        # 4방향 탐색
-        for k in range(4):
-            length = 0  # 전선 설치 가능한 경우 길이
-            flag = True  # 전선 설치 가능 유무 판단
-
-            ni, nj = x, y
-
-            # 전선 설치 가능 유무 판단
-            while True:
-                ni += di[k]
-                nj += dj[k]
-
-                if ni < 0 or ni >= n or nj < 0 or nj >= n: break
-
-                if board[ni][nj] != 0:
-                    flag = False
-                    break
-
-            # 전선 설치 가능하면, 전선 표시
-            if flag:
-                direction_connected = True
-                ni, nj = x, y
-
-                while True:
-                    ni += di[k]
-                    nj += dj[k]
-
-                    if ni < 0 or ni >= n or nj < 0 or nj >= n: break
-
-                    board[ni][nj] = 2
-                    length += 1
-
-                # 탐색
-                dfs(idx + 1, connected + 1, wire_length + length)
-
-                # 백트래킹으로 전선 제거
-                ni, nj = x, y
-                while True:
-                    ni += di[k]
-                    nj += dj[k]
-
-                    if ni < 0 or ni >= n or nj < 0 or nj >= n: break
-
-                    board[ni][nj] = 0
-
-        dfs(idx + 1, connected, wire_length)
-
-
-    dfs(0, 0, 0)
-
-    print(f"#{tc + 1} {min_wire}")
+			sb.append(numOfLine).append("\n");
+			
+		}
+		
+		System.out.print(sb);
+	}
+	
+	static int max_connected;
+	static int numOfLine;
+	
+	static private void recursive(int[][] arr, int connected_p, int connected_line, int idx) {
+		
+		// 종료조건
+		if (idx == processorList.size()) {
+			if (connected_p > max_connected) {
+				max_connected = connected_p;
+				numOfLine = connected_line;
+			} else if (connected_p == max_connected) {
+				numOfLine = Math.min(numOfLine, connected_line);
+			}
+			return;
+		}
+			
+		int[] pos = processorList.get(idx);
+		
+		int ni = pos[0];
+		int nj = pos[1];
+		
+		// 가장자리에 있는 프로세서
+		if (ni == 0 || ni == N-1 || nj == 0 || nj == N-1) {
+			recursive(arr, connected_p + 1, connected_line, idx + 1);
+		} else {
+		
+			for (int k = 0; k < 4; k++) {
+				
+				if (validate(ni, nj, k, arr)) {
+					
+					// 주어진 배열 복사
+					int[][] copied = new int[N][N];
+					
+					for (int l = 0; l < N; l++) {
+						copied[l] = arr[l].clone();
+					}
+					
+					int tempNi = pos[0];
+					int tempNj = pos[1];
+					int addLine = 0;
+					
+					// 이동하면서 전선개수 추가 및 전선 표시					
+					while (true) {
+						
+						tempNi += di[k];
+						tempNj += dj[k];
+						
+						if (tempNi < 0 || tempNi >= N || tempNj < 0 || tempNj >= N) break;
+						
+						copied[tempNi][tempNj] = 2;
+						addLine++;
+						
+					}
+					
+					recursive(copied, connected_p + 1, connected_line + addLine, idx + 1);
+				}
+			}
+			// 프로세서 연결하지 않는 경우
+			recursive(arr, connected_p, connected_line, idx + 1);
+		}
+	}
+	
+	static private boolean validate(int i, int j, int d, int[][] arr) {
+		
+		int ni = i;
+		int nj = j;
+		
+		while (true) {
+			
+			ni += di[d];
+			nj += dj[d];
+			
+			if (ni < 0 || ni >= N || nj < 0 || nj >= N) {
+				return true;
+			}
+			
+			if (arr[ni][nj] != 0) {
+				return false;
+			}
+		}
+	}
+	
+}
