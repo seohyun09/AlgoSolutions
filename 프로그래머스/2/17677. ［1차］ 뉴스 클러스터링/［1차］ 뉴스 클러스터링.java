@@ -7,8 +7,6 @@ class Solution {
         HashMap<String, Integer> map2 = makeMap(str2);
         
         int intersect = 0;
-        int map1Values = 0;
-        int map2Values = 0;
         
         for (Map.Entry<String, Integer> entry : map1.entrySet()) {
             String key = entry.getKey();
