@@ -17,7 +17,7 @@ class Solution {
             }
         }
         
-        if (prev <= n + 1) {
+        if (prev <= n) {
             int gap = n - prev + 1;
             answer += (gap + unit - 1) / unit;
         }
