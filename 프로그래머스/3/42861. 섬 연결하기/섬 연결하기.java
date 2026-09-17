@@ -1,60 +1,70 @@
 import java.util.*;
 
-class Solution {
-    static int N;
-    static ArrayList<int[]>[] graph;
+class Edge implements Comparable<Edge> {
+    int start;
+    int end;
+    int weight;
     
-    public int solution(int n, int[][] costs) {
-        N = n;
-        graph = new ArrayList[N];
-        
-        for (int i = 0; i < N; i++) {
-            graph[i] = new ArrayList<>();
-        }
-        
-        for (int i = 0; i < costs.length; i++) {
-            int start = costs[i][0];
-            int end = costs[i][1];
-            int cost = costs[i][2];
-            
-            graph[start].add(new int[] {end, cost});
-            graph[end].add(new int[] {start, cost});
-        }
-        
-        return Prim(0);       
-        
+    Edge(int start, int end, int weight) {
+        this.start = start;
+        this.end = end;
+        this.weight = weight;
     }
-    private int Prim(int start) {
-        boolean[] mst = new boolean[N];
-        
-        PriorityQueue<int[]> pq = new PriorityQueue<>(
-            (a, b) -> Integer.compare(a[0], b[0])
-        );
-        pq.add(new int[] {0, start});
-        
-        int min_w = 0;
-        int cnt_v = 0;
-        
-        while (!pq.isEmpty() && cnt_v < N) {
-            
-            int[] curr = pq.poll();
-            int w = curr[0];
-            int v = curr[1];
-            
-            if (mst[v]) continue;
-            
-            mst[v] = true;
-            min_w += w;
-            cnt_v++;
-            
-            for (int[] edge : graph[v]) {
-                int nv = edge[0];
-                int nw = edge[1];
-                
-                pq.add(new int[] {nw, nv});
-            }
-            
-        }
-        return min_w;
+    
+    @Override
+    public int compareTo(Edge other) {
+        return Integer.compare(this.weight, other.weight);
     }
 }
+
+class Solution {
+    private int[] PARENT;
+    
+    public int solution(int n, int[][] costs) {
+        int answer = 0;
+        
+        List<Edge> linked_list = new ArrayList<Edge>();
+        
+        for (int[] cost : costs) {
+            Edge edge = new Edge(cost[0], cost[1], cost[2]);
+            linked_list.add(edge);
+        }
+        
+        // 가중치 기준 오름차순 정렬
+        Collections.sort(linked_list);       
+        
+        // 부모 노드 설정(초기화)
+        PARENT = new int[n];
+        for (int i = 0; i < n; i++) {
+            PARENT[i] = i;
+        }
+        
+        for (Edge edge : linked_list) {
+            int start = edge.start;
+            int end = edge.end;
+            int weight = edge.weight;
+            
+            if (union(start, end)) { // 사이클이 생기지 않는 경우
+                answer += weight;
+            }
+        }
+        
+        return answer;
+    }
+    
+    private boolean union(int a, int b) {
+        if (find(a) != find(b)) {
+            PARENT[find(b)] = find(a);
+            return true;
+        }
+        return false;
+    }
+    
+    private int find(int a) {
+        if (PARENT[a] == a) {
+            return a;
+        }
+        return find(PARENT[a]);
+    }
+}
+
