@@ -1,35 +1,28 @@
 def solution(n, computers):
-    stack=[]
-    n=len(computers)
-    visited=[False]*n
+    visited = [False] * n
+    answer = 0
     
-    stack.append(0)
-    
-    graph={}
     for i in range(n):
-        if i not in graph.keys():
-            graph[i]=[]
-        for j in range(n):
-            if computers[i][j]==1 and i!=j:
-                graph[i].append(j)
-    
-    def dfs(stack, visited):
-        while stack:
-            num=stack.pop()
-            visited[num]=True
+        if not visited[i]:
+            answer += 1
+            dfs(i, visited, computers)
             
-            for node in graph[num]:
-                if not visited[node]:
-                    stack.append(node)
-                    
-    numOfNetwork=0
-    while sum(visited)!=n:
-        for k in range(len(visited)):
-            stack.append(k)
-            if not visited[k]:
-                numOfNetwork+=1
-                dfs(stack, visited)
+    return answer
+
+def dfs(start, visited, computers):
+    n = len(computers)
+    stack = [start]
     
-    return numOfNetwork
-        
-        
+    while stack:
+        node = stack.pop()
+        if not visited[node]:
+            visited[node] = True
+            
+            neighbor = computers[node]
+            for j in range(n):
+                if neighbor[j] == 1 and not visited[j]:
+                    stack.append(j)
+    
+    return
+    
+    
