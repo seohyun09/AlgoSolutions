@@ -1,10 +1,10 @@
 # [level 3] 순위 - 49191 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/49191?language=python3) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/49191) 
 
 ### 성능 요약
 
-메모리: 9.61 MB, 시간: 195.92 ms
+메모리: 11.6 MB, 시간: 38.91 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2026년 03월 05일 00:50:06
+2026년 10월 19일 17:22:07
 
 ### 문제 설명
 

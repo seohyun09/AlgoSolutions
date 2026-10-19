@@ -1,31 +1,35 @@
 def solution(n, results):
-    graph = [[0] * n for _ in range(n)]
+    
+    # 인접 행렬
+    matrix = [[0] * n for _ in range(n)]
     
     for i in range(len(results)):
-        winner = results[i][0] - 1
-        looser = results[i][1] - 1
+        win = results[i][0]
+        lose = results[i][1]
         
-        graph[winner][looser] = 1
-        graph[looser][winner] = -1
+        # 이겼을 때: 1, 졌을 때: -1
+        matrix[win-1][lose-1] = 1
+        matrix[lose-1][win-1] = -1
+        
+    # 플로이드-워셜 알고리즘 수행
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                if matrix[i][k] == 1 and matrix[k][j] == 1:
+                    matrix[i][j] = 1
+                    matrix[j][i] = -1
     
-    for i in range(n):
-        for j in range(n):
-            for k in range(n):
-                if graph[i][j] == 1 and graph[j][k] == 1:
-                    graph[i][k] = 1
-                    graph[k][i] = -1
-    
-                if graph[i][j] == -1 and graph[j][k] == -1:
-                    graph[i][k] = -1
-                    graph[k][i] = 1
-    
+    # 순위 아는 선수 확인
     answer = 0
     for i in range(n):
         cnt = 0
         for j in range(n):
-            if graph[i][j] !=0 :
+            if i == j:
+                continue
+            elif matrix[i][j] != 0:
                 cnt += 1
+        
         if cnt == n-1:
             answer += 1
-    
+            
     return answer
