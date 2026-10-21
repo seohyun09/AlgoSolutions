@@ -1,24 +1,26 @@
 from collections import deque
 
 def solution(priorities, location):
-    q=list(deque())
-    result=[]
     
+    que = deque()
     for i in range(len(priorities)):
-        q.append([priorities[i], i])
+        que.append([i, priorities[i]])
     
-    while q:
-        arr=q.pop(0)
-        priority=arr[0]
-        num=arr[1]
-        
-        if any(priority<item[0] for item in q):
-            q.append([priority, num])
-        else:
-            result.append(num)
+    cnt = 0
     
-    for i in range(len(result)):
-        if result[i]==location:
-            return i+1
+    while que:
+        idx, val = que.popleft()
         
+        flag = False
+        for i in range(len(que)):
+            if val < que[i][1]:
+                que.append([idx, val])
+                flag = True
+                break
+        
+        # 프로세스를 큐에 넣지 않는 경우
+        if not flag:
+            cnt += 1
+            if idx == location:
+                return cnt
         
