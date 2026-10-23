@@ -35,8 +35,7 @@ def solution(n, roads, sources, destination):
                 if new_dist < dist[nxt]:
                     dist[nxt] = new_dist
                     heapq.heappush(pq, (new_dist, nxt))
-                    visited[nxt] = True
-        
+                    
         return dist
     
     dist = dijkstra(destination)
