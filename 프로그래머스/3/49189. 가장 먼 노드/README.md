@@ -1,10 +1,10 @@
 # [level 3] 가장 먼 노드 - 49189 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/49189?language=python3) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/49189) 
 
 ### 성능 요약
 
-메모리: 21.1 MB, 시간: 50.50 ms
+메모리: 22.4 MB, 시간: 28.94 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2026년 03월 04일 23:17:51
+2026년 10월 23일 14:33:21
 
 ### 문제 설명
 
@@ -51,7 +51,7 @@
 
 <p>예제의 그래프를 표현하면 아래 그림과 같고, 1번 노드에서 가장 멀리 떨어진 노드는 4,5,6번 노드입니다.</p>
 
-<p><img src="https://grepp-programmers.s3.amazonaws.com/files/ybm/fadbae38bb/dec85ab5-0273-47b3-ba73-fc0b5f6be28a.png" title="" alt="image.png"></p>
+<p><img src="https://asset.programmers.co.kr/files/ybm/fadbae38bb/dec85ab5-0273-47b3-ba73-fc0b5f6be28a.png" title="" alt="image.png"></p>
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges

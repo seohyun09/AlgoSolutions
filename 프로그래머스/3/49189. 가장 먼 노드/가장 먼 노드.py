@@ -1,33 +1,48 @@
-from collections import deque
+import heapq
 
 def solution(n, edge):
-    graph = {}
-    answer = {}
     
-    for i in range(n):
-        graph[i + 1] = []
+    INF = float('inf')
+    
+    # 인접 리스트
+    graph = [[] for _ in range(n + 1)]
     
     for i in range(len(edge)):
-        graph[edge[i][0]].append(edge[i][1])
-        graph[edge[i][1]].append(edge[i][0])
-    
-    visited = [False] * (n + 1)
-    
-    que = deque()
-    que.append((1, 0))
-    visited[1] = True
-    
-    while que:
-        node, cnt = que.popleft()
-        if cnt not in answer:
-            answer[cnt] = []
-        answer[cnt].append(node)
+        s, e = edge[i]
+        graph[s].append(e)
+        graph[e].append(s)
         
-        for i in range(len(graph[node])):
-            val = graph[node][i]
-            if not visited[val]:
-                visited[val] = True
-                que.append((val, cnt + 1))
     
-    max_key = max(answer.keys())
-    return len(answer[max_key])
+    def dijkstra(node):
+        
+        visited = [False] * (n + 1)
+        dist = [INF] * (n + 1)
+        dist[0] = 0
+        dist[node] = 0
+        
+        pq = []
+        heapq.heappush(pq, (0, node))
+        visited[node] = True
+        
+        while pq:
+            weight, current = heapq.heappop(pq)
+            
+            visited[current] = True
+            
+            for nxt in graph[current]:
+                new_dist = weight + 1
+                
+                if not visited[nxt] and new_dist < dist[nxt]:
+                    dist[nxt] = new_dist
+                    pq.append((new_dist, nxt))
+              
+        max_val = max(dist)
+        cnt = 0
+        for i in range(1, n + 1):
+            if dist[i] == max_val:
+                cnt += 1
+        
+        return cnt
+    
+    return dijkstra(1)
+            
