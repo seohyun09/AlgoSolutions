@@ -1,52 +1,53 @@
-from collections import deque
+import heapq
 
 def solution(n, roads, sources, destination):
+    
     INF = float('inf')
     
-    # 인접행렬
+    # 인접 리스트
     graph = [[] for _ in range(n + 1)]
-    for road in roads:
-        start = road[0]
-        end = road[1]
-        
-        graph[start].append(end)
-        graph[end].append(start)
     
-    def bfs(start):
-                
-        distance = [INF] * (n + 1)
-        distance[0] = 0
-        distance[start] = 0
+    for s, e in roads:
+        graph[s].append(e)
+        graph[e].append(s)
         
-        que = deque()
-        que.append(start)
+    def dijkstra(start):
+        
         visited = [False] * (n + 1)
+        dist = [INF] * (n + 1)
+        dist[0] = 0
         
-        while que:
-            
-            current = que.popleft()
-            
-            if visited[current]:
-                continue
-            
-            visited[current] = True
-            
-            for neighbor in graph[current]:
-                distance[neighbor] = min(distance[neighbor], distance[current] + 1)
-                que.append(neighbor)
+        pq = []
+        heapq.heappush(pq, (0, start))
+        dist[start] = 0
         
-        return distance
+        while pq:
+            w, curr = heapq.heappop(pq)
             
+            visited[curr] = True
+            
+            for nxt in graph[curr]:
+                if visited[nxt]:
+                    continue
+                    
+                new_dist = dist[curr] + 1
+                
+                if new_dist < dist[nxt]:
+                    dist[nxt] = new_dist
+                    heapq.heappush(pq, (new_dist, nxt))
+                    visited[nxt] = True
+        
+        return dist
+    
+    dist = dijkstra(destination)
+    
     answer = []
     
-    distance = bfs(destination)
-    
     for node in sources:
-        val = distance[node]
-        if val == float('inf'):
-            answer.append(-1)
+        if dist[node] != INF:
+            answer.append(dist[node])
         else:
-            answer.append(distance[node])    
+            answer.append(-1)
         
     return answer
-    
+            
