@@ -10,7 +10,8 @@ def solution(n, costs):
         if parent[x] == x:
             return x
         
-        return find(parent[x])
+        parent[x] = find(parent[x])
+        return parent[x]
     
     def union(a, b):
         parent_a = find(a)
