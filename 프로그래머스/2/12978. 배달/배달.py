@@ -1,43 +1,45 @@
+import heapq
+
 def solution(N, road, K):
+    
+    INF = float('inf')
     
     # 인접 리스트
     graph = [[] for _ in range(N)]
     
-    for i in range(len(road)):
-        s, e, w = road[i]
-        graph[s-1].append([e-1, w])
-        graph[e-1].append([s-1, w])
+    for a, b, c in road:
+        graph[a-1].append((c, b-1))
+        graph[b-1].append((c, a-1))
         
-    INF = float('inf')
-    dist = [INF] * N
-    dist[0] = 0
-    
-    # 방문 배열
     visited = [False] * N
+    dist = [INF] * N
     
-    for i in range(N):
+    def dijkstra(start):
         
-        min_val = INF
-        min_node = -1
+        pq = []
+        heapq.heappush(pq, (0, start))
+        dist[start] = 0
         
-        for j in range(N):
-            if not visited[j] and min_val > dist[j]:
-                min_val = dist[j]
-                min_node = j
+        while pq:
+            w, curr = heapq.heappop(pq)
+            
+            if visited[curr]:
+                continue
+            
+            visited[curr] = True
+            
+            for c, nxt in graph[curr]:
+                new_dist = dist[curr] + c
                 
-        if min_node == -1:
-            break
+                if not visited[nxt] and new_dist < dist[nxt]:
+                    dist[nxt] = new_dist
+                    heapq.heappush(pq, (new_dist, nxt))
         
-        visited[min_node] = True
+        answer = 1
+        for i in range(1, N):
+            if dist[i] <= K:
+                answer += 1
         
-        for e, w in graph[min_node]:
-            dist[e] = min(dist[e], min_val + w)
-    
-    answer = 0
-    
-    for i in range(N):
-        if dist[i] <= K:
-            answer += 1
-    
-    return answer  
-    
+        return answer
+        
+    return dijkstra(0)
