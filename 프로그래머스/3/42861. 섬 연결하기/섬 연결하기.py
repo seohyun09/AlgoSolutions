@@ -1,35 +1,34 @@
+import heapq
+
 def solution(n, costs):
     
-    costs.sort(key=lambda x : x[2])
+    # 인접 리스트
+    graph = [[] for _ in range(n)]
     
-    parent = [i for i in range(n)]
+    for a, b, w in costs:
+        graph[a].append((w, b))
+        graph[b].append((w, a))
     
-    def find(x):
-        if parent[x] == x:
-            return x
-        
-        parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(a, b):
-        parent_a = find(a)
-        parent_b = find(b)
-        
-        if parent_a == parent_b:
-            return False
-        
-        parent[parent_a] = parent_b
-        return True
+    visited = [False] * n
     
     answer = 0
     cnt = 0
     
-    for a, b, w in costs:
-        if union(a, b):
-            answer += w
-            cnt += 1
+    pq = []
+    heapq.heappush(pq, (0, 0))
+    
+    while pq:
+        w, curr = heapq.heappop(pq)
         
-        if cnt == n - 1:
-            break
+        if visited[curr]:
+            continue
+        
+        visited[curr] = True
+        answer += w
+        cnt += 1
+        
+        for nxt_w, nxt in graph[curr]:
+            if not visited[nxt]:
+                heapq.heappush(pq, (nxt_w, nxt))
     
     return answer
