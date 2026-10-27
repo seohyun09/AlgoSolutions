@@ -29,7 +29,7 @@ def solution(N, road, K):
             visited[curr] = True
             
             for c, nxt in graph[curr]:
-                new_dist = dist[curr] + c
+                new_dist = w + c
                 
                 if not visited[nxt] and new_dist < dist[nxt]:
                     dist[nxt] = new_dist
