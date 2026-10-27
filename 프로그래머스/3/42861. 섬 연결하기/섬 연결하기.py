@@ -1,5 +1,3 @@
-import heapq
-
 def solution(n, costs):
     
     costs.sort(key=lambda x : x[2])
